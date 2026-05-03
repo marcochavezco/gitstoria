@@ -1,0 +1,105 @@
+# gitstoria
+
+Attach reasoning and process notes to your git commits via any MCP-compatible
+LLM client. Every time you commit, gitstoria queues the commit for review —
+your LLM reads the diff, writes a structured session log, and stores it locally
+alongside your repo history.
+
+## How it works
+
+1. You make a commit — a `post-commit` hook fires and records the commit hash in a local SQLite DB
+2. You ask Claude to log what you worked on
+3. Claude calls the gitstoria MCP tools, reads the diff, and writes a session log back to the DB
+
+---
+
+## Requirements
+
+- Node 18+
+- git
+
+## Installation
+
+Install globally:
+
+```sh
+npm install -g gitstoria
+```
+
+Then initialize inside a git repository:
+
+```sh
+cd your-project
+gitstoria init
+```
+
+This creates `~/.gitstoria/sessions.db` and installs a `post-commit` hook in the current repo.
+
+---
+
+## Claude Desktop setup
+
+Add this to your `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "gitstoria": {
+      "command": "npx",
+      "args": ["-y", "gitstoria", "mcp"]
+    }
+  }
+}
+```
+
+Restart Claude Desktop. The five gitstoria tools will be available in every conversation.
+
+## Compatible clients
+
+Any MCP-compatible client works with gitstoria:
+
+- **Claude Desktop** — see setup above
+- **Cursor** — add to `.cursor/mcp.json`
+- **Any MCP client** — use `npx gitstoria mcp` as the server command
+
+---
+
+## MCP tools
+
+| Tool            | Description                                                   |
+| --------------- | ------------------------------------------------------------- |
+| `check_pending` | List commits in the current repo that have no session log yet |
+| `get_git_log`   | Return recent commits with hash, author, date, and message    |
+| `get_git_diff`  | Return the raw diff between two commit hashes                 |
+| `log_session`   | Save a session log summary for a range of commits             |
+| `get_session`   | Retrieve a saved session log by commit hash                   |
+
+All tools take `repoPath` (absolute path to the repository) as their first input.
+
+---
+
+## Usage example
+
+You say to Claude:
+
+> "Log what I just worked on in ~/projects/myapp"
+
+Claude will:
+
+1. Call `check_pending` to find unlogged commits
+2. Call `get_git_log` to see the commit messages
+3. Call `get_git_diff` to read the actual changes
+4. Call `log_session` with a written summary of the work and the commit range
+
+The log is stored in `~/.gitstoria/sessions.db` and can be retrieved later with `get_session`.
+
+---
+
+## CLI
+
+```sh
+gitstoria init               # initialize in the current git repo
+gitstoria mcp                # start the MCP server (used by Claude Desktop)
+```
+
+`gitstoria record-commit` is called automatically by the post-commit hook — you do not need to run it manually.
