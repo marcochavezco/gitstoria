@@ -76,13 +76,16 @@ Any MCP-compatible client works with gitstoria:
 
 All tools take `repoPath` (absolute path to the repository) as their first input.
 
+> **Note:** `repoPath` must be an absolute path (e.g. `/Users/yourname/projects/myapp`).
+> The `~` shorthand is not expanded.
+
 ---
 
 ## Usage example
 
 You say to Claude:
 
-> "Log what I just worked on in ~/projects/myapp"
+> "Log what I just worked on in /Users/yourname/projects/myapp"
 
 Claude will:
 
