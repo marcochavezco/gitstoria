@@ -106,3 +106,14 @@ gitstoria mcp                # start the MCP server (used by Claude Desktop)
 ```
 
 `gitstoria record-commit` is called automatically by the post-commit hook — you do not need to run it manually.
+
+---
+
+## Troubleshooting
+
+If you see a `NODE_MODULE_VERSION` error on first run:
+
+```sh
+npm cache clean --force && rm -rf ~/.npm/_npx
+npx gitstoria init
+```
