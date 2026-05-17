@@ -4,7 +4,7 @@ import { join } from 'path';
 const HOOK_SCRIPT = `#!/bin/sh
 HASH=$(git rev-parse HEAD)
 REPO=$(pwd)
-gitstoria record-commit --hash "$HASH" --repo "$REPO"
+npx --yes gitstoria record-commit --hash "$HASH" --repo "$REPO"
 `;
 
 export function installHook(repoPath: string): void {

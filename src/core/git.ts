@@ -7,6 +7,43 @@ export interface Commit {
   message: string;
 }
 
+export interface GraphNode {
+  hash: string;
+  parents: string[];
+  refs: string[];
+  subject: string;
+  author: string;
+  date: string;
+}
+
+export function getGitGraph(repoPath: string, limit = 150): GraphNode[] {
+  try {
+    const SEP = '\x01';
+    const output = execSync(
+      `git log --all --topo-order --max-count=${limit} --format="%H${SEP}%P${SEP}%D${SEP}%s${SEP}%an${SEP}%aI"`,
+      { cwd: repoPath, encoding: 'utf8' },
+    ).trim();
+
+    if (!output) return [];
+
+    return output.split('\n').map((line) => {
+      const [hash, parentsRaw, refsRaw, subject, author, date] = line.split(SEP);
+      return {
+        hash,
+        parents: parentsRaw ? parentsRaw.split(' ').filter(Boolean) : [],
+        refs: refsRaw ? refsRaw.split(', ').filter(Boolean) : [],
+        subject,
+        author,
+        date,
+      };
+    });
+  } catch (error) {
+    throw new Error(
+      `Failed to get git graph for ${repoPath}: ${error instanceof Error ? error.message : String(error)}`,
+    );
+  }
+}
+
 export function getGitLog(repoPath: string, limit = 10): Commit[] {
   try {
     const separator = '|||';

@@ -89,4 +89,18 @@ program
     await startMcpServer();
   });
 
+program
+  .command('ui')
+  .description('Open the gitstoria UI in your browser')
+  .option('--port <port>', 'starting port', '3000')
+  .action(async (opts: { port: string }) => {
+    try {
+      const { startServer } = await import('../server/index.js');
+      await startServer(parseInt(opts.port, 10));
+    } catch (err) {
+      console.error(`  ✗ ${err instanceof Error ? err.message : String(err)}`);
+      process.exit(1);
+    }
+  });
+
 program.parse();
