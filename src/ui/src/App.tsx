@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Sidebar from './components/Sidebar.tsx';
-import Timeline from './components/Timeline.tsx';
+import GitGraph from './components/GitGraph.tsx';
 import LogDetail from './components/LogDetail.tsx';
 import SearchBar from './components/SearchBar.tsx';
 
@@ -31,7 +31,7 @@ export default function App() {
           selectedRepo={selectedRepo}
           onSelectRepo={(repo) => { setSelectedRepo(repo); setSelectedCommit(null); }}
         />
-        <Timeline
+        <GitGraph
           repo={selectedRepo}
           selectedCommit={selectedCommit}
           onSelectCommit={setSelectedCommit}

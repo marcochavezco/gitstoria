@@ -6,6 +6,7 @@ import { existsSync } from 'fs';
 import { projectsRouter } from './routes/projects.js';
 import { commitsRouter } from './routes/commits.js';
 import { logsRouter } from './routes/logs.js';
+import { graphRouter } from './routes/graph.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -31,6 +32,7 @@ export async function startServer(startPort = 3000): Promise<void> {
   app.use('/api', projectsRouter);
   app.use('/api', commitsRouter);
   app.use('/api', logsRouter);
+  app.use('/api', graphRouter);
 
   const uiDir = join(__dirname, '..', 'ui');
   if (existsSync(uiDir)) {
