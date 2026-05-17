@@ -11,7 +11,8 @@
     "./mcp": "./build/mcp/index.js"
   },
   "scripts": {
-    "build": "tsc && chmod 755 build/cli/index.js",
+    "build": "tsc && vite build --config src/ui/vite.config.ts && chmod 755 build/cli/index.js",
+    "ui:dev": "concurrently \"vite build --watch --config src/ui/vite.config.ts\" \"node build/server/dev.js\"",
     "postinstall": "npm rebuild better-sqlite3",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -25,11 +26,21 @@
     "@modelcontextprotocol/sdk": "^1.29.0",
     "better-sqlite3": "^12.9.0",
     "commander": "^14.0.3",
+    "express": "^4.21.2",
     "zod": "3"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.13",
+    "@types/express": "^4.17.21",
     "@types/node": "^25.6.0",
-    "typescript": "^6.0.3"
+    "@types/react": "^18.3.23",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^9.1.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-markdown": "^9.0.3",
+    "typescript": "^6.0.3",
+    "vite": "^6.3.5"
   }
 }
