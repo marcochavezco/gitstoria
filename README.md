@@ -103,15 +103,50 @@ The log is stored in `~/.gitstoria/sessions.db` and can be retrieved later with 
 ```sh
 gitstoria init               # initialize in the current git repo
 gitstoria mcp                # start the MCP server (used by Claude Desktop)
+gitstoria ui                 # open the session log browser at http://localhost:3000
+gitstoria ui --port 4000     # start on a custom port
 ```
 
 `gitstoria record-commit` is called automatically by the post-commit hook — you do not need to run it manually.
 
 ---
 
+## Logging commits made before init
+
+gitstoria only tracks commits made after `gitstoria init` is run. To retroactively queue an older commit for logging, run:
+
+```sh
+gitstoria record-commit --hash <commit-hash> --repo <absolute-path-to-repo>
+```
+
+For example:
+
+```sh
+gitstoria record-commit --hash abc1234 --repo /Users/yourname/projects/myapp
+```
+
+Once queued, ask Claude to log it the same way as any other pending commit.
+
+---
+
 ## Troubleshooting
 
-If you see a `NODE_MODULE_VERSION` error on first run:
+**`gitstoria: command not found` in post-commit hook**
+
+The hook runs with a restricted PATH that may not include your global npm bin. Re-initialize to get the updated hook:
+
+```sh
+rm .git/hooks/post-commit
+gitstoria init
+```
+
+Or patch the existing hook manually:
+
+```sh
+sed -i '' 's|gitstoria record-commit|npx --yes gitstoria record-commit|' .git/hooks/post-commit
+```
+
+**`NODE_MODULE_VERSION` error on first run**
 
 ```sh
 npm cache clean --force && rm -rf ~/.npm/_npx
