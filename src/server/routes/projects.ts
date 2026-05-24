@@ -10,7 +10,11 @@ projectsRouter.get('/projects', (_req, res) => {
       `SELECT repo_path,
               COUNT(*) AS commit_count,
               MAX(created_at) AS last_activity
-       FROM session_logs
+       FROM (
+         SELECT repo_path, created_at FROM session_logs
+         UNION ALL
+         SELECT repo_path, created_at FROM pending_commits
+       )
        GROUP BY repo_path
        ORDER BY last_activity DESC`,
     )
